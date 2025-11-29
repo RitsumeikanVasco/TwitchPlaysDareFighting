@@ -5,13 +5,15 @@ import Config from "./Config.json"
 import API from "./API.json"
 import {getToken} from "./functions/getToken"
 
-
+interface TokenResponse {
+    access_token: string;
+    expires_in: number;
+    token_type: 'bearer';
+}
 
 const app = express()
 
 app.listen(Config.port, async () => {
-    let token = await getToken()
+    let token: TokenResponse = await getToken()
 
-    console.log("===GetTokenReturn===")
-    console.log(token)
 })
