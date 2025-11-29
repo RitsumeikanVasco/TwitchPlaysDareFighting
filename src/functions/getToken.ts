@@ -8,9 +8,6 @@ export async function getToken (){
             client_secret: process.env.CLIENT_SECRET,
             grant_type: 'client_credentials'
         });
-        
-        console.log("===Data===")
-        console.log(response.data)
 
         return response.data;
     } catch (error: any) {
