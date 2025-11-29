@@ -1,0 +1,4 @@
+{
+    "oauth2": "https://id.twitch.tv/oauth2/token",
+    "games": "https://api.twitch.tv/helix/games"
+}
