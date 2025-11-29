@@ -12,12 +12,16 @@ import express from 'express'
 import Config from "./Config.json"
 import API from "./API.json"
 import {getToken} from "./functions/getToken"
+import {Server} from "socket.io"
 import tmi from "tmi.js"
+import http from "http"
 
 // Types
 import type { TokenResponse } from './ChatTypes.js';
 
 const app = express()
+const server = http.createServer(app);
+const io = new Server(server);
 
 app.listen(Config.port, async () => {
     let token: TokenResponse = await getToken()
@@ -31,6 +35,11 @@ app.listen(Config.port, async () => {
             password: process.env.BOT_TOKEN
         },        
     })
+
+    io.on("connection", (socket) => {
+        console.log("Client connected");
+    });
+
 
     client.connect()
 
