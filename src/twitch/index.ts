@@ -23,9 +23,11 @@ export async function twitchInit(){
         if (self)
             return
 
-        getSocket().then((socket)=>{
-            socket.emit("Jump") // This calls jump in the Java code!
-        })
+        if (message == "jump"){
+            getSocket().then((socket)=>{
+                socket.emit("Jump") // This calls jump in the Java code!
+            })
+        }
     })
     
     twitchClient.connect()
