@@ -1,5 +1,6 @@
 import {getToken} from "./../functions/getToken"
 import tmi from "tmi.js"
+import {getSocket} from "./../socket/index"
 
 // Types
 import type { TokenResponse } from './../ChatTypes.js';
@@ -22,6 +23,9 @@ export async function twitchInit(){
         if (self)
             return
 
+        getSocket().then((socket)=>{
+            socket.emit("Jump") // This calls jump in the Java code!
+        })
     })
     
     twitchClient.connect()
