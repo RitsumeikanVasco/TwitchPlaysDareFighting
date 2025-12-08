@@ -25,7 +25,25 @@ export async function twitchInit(){
 
         if (message == "jump"){
             getSocket().then((socket)=>{
-                socket.emit("Jump") // This calls jump in the Java code!
+                socket.emit("jump") // This calls jump in the Java code!
+            })
+        }
+
+        if (message == "attack"){
+            getSocket().then((socket)=>{
+                socket.emit("attack") // This calls jump in the Java code!
+            })
+        }
+
+        if (message == "defence"){
+            getSocket().then((socket)=>{
+                socket.emit("defence") // This calls jump in the Java code!
+            })
+        }
+
+        if (message == "other"){
+            getSocket().then((socket)=>{
+                socket.emit("other") // This calls jump in the Java code!
             })
         }
     })
