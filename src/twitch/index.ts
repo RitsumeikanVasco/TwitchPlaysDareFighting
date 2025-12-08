@@ -1,6 +1,7 @@
 import {getToken} from "./../functions/getToken"
 import tmi from "tmi.js"
 import { createBot } from "./createBot"
+import { getSocket } from "../socket"
 import * as SessionBot from "./SessionBot"
 
 // Types
@@ -18,14 +19,6 @@ export async function twitchInit(){
 
     await SessionBot.initSessionBot()
     await twitchClient.connect()
-}
-    const twitchClient = new tmi.Client({
-        channels: [ channelToListenUsername ],
-        identity: {
-            username: process.env.BOT_USERNAME,
-            password: process.env.BOT_TOKEN
-        },        
-    })
 
     // Called when you receive a message from Twitch
     twitchClient.on('message', (channel: string, tags: tmi.ChatUserstate, message: string, self: boolean) => {
