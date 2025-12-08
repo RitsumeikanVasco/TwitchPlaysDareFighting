@@ -13,10 +13,12 @@ import Config from "./Config.json"
 
 import {socketInit} from "./socket/index"
 import {twitchInit} from "./twitch/index"
+import {databaseInit} from "./Database/index"
 
 const app = express()
 
 app.listen(Config.port, async () => {
+    await databaseInit()
     await socketInit()
     await twitchInit()
 })
