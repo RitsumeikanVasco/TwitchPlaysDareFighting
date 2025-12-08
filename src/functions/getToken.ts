@@ -6,7 +6,8 @@ export async function getToken (){
         const response = await axios.post(API.oauth2, {
             client_id: process.env.CLIENT_ID,
             client_secret: process.env.CLIENT_SECRET,
-            grant_type: 'client_credentials'
+            grant_type: 'authorization_code'
+            //grant_type: 'client_credentials'
         });
 
         return response.data;
