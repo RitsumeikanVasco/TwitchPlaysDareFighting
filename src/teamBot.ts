@@ -8,7 +8,7 @@ type TeamMap = Record<string, Team>;
 
 // チーム情報を保存する JSON ファイルの場所
 // プロジェクト構成に合わせて好きに変えてOK
-const TEAM_FILE_PATH = path.join(__dirname, "../../shared/team.json");
+const TEAM_FILE_PATH = path.join(process.cwd(), "src/team.json");
 
 // メモリ上のユーザー -> チームマップ
 const userTeam: TeamMap = {};
