@@ -14,12 +14,8 @@ twitchClient.on('message', (channel: string, tags: tmi.ChatUserstate, message: s
 })
 */
 export async function twitchInit(){
-    let token: TokenResponse = await getToken()
-
-    console.log(token)
-    // let accessToken: string = token.access_token
     const twitchClient: tmi.Client = createBot()
 
-    SessionBot.initSessionBot()
-    twitchClient.connect()
+    await SessionBot.initSessionBot()
+    await twitchClient.connect()
 }
