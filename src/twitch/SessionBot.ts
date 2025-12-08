@@ -1,31 +1,55 @@
 import { createBot } from "./createBot"
 import tmi from "tmi.js"
-import API from "./../API.json"
 import {getChatters} from "./../functions/getChatters"
-import axios from "axios"
+import { EventEmitter } from "events";
+
+const UPDATE_RATE_SECONDS = 10
 
 let playerSessions = new Map()
 
+let sessionsEmitter = new EventEmitter()
+
 function checkPlayerJoined(playerId: string){
+    if (playerSessions.has(playerId))
+        return
+
     playerSessions.set(playerId, Date.now())
+    sessionsEmitter.emit("Join", playerId)
 }
 
 function checkPlayerLeft(playerId: string){
+    if (!playerSessions.has(playerId))
+        return
 
+    playerSessions.delete(playerId)
+    sessionsEmitter.emit("Leave", playerId)
 }
 
 function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function loop() {
-    while (true) {
-        console.log("Every 5 seconds");
-        await sleep(5000);
-    }
+async function cacheChatUsers(){
+    const chatters = await getChatters() // array of { user_id, user_login, user_name }
+    const currentUserIds = chatters.map(u => u.user_id)
+
+    currentUserIds.forEach(userId => {
+        checkPlayerJoined(userId)
+    })
+
+    Array.from(playerSessions.keys()).forEach(userId => {
+        if (!currentUserIds.includes(userId)) {
+            checkPlayerLeft(userId)
+        }
+    })
 }
 
-
+async function loop() {
+    while (true) {
+        await sleep(UPDATE_RATE_SECONDS * 1000);
+        await cacheChatUsers()
+    }
+}
 
 export async function initSessionBot(){
     const twitchClient: tmi.Client = createBot()
@@ -34,14 +58,22 @@ export async function initSessionBot(){
         if (self)
             return
 
-        let userId: string | undefined = tags.id
+        let userId: string | undefined = tags["user-id"]
 
         if (userId == undefined)
             return
 
         checkPlayerJoined(userId)
-        //loop()
     })
 
-    console.log(await getChatters())
+    cacheChatUsers()
+    loop()
+
+    sessionsEmitter.on("Join", (playerId)=>{
+        console.log("Join", playerId)
+    })
+
+    sessionsEmitter.on("Leave", (playerId)=>{
+        console.log("Leave", playerId)
+    })
 }
