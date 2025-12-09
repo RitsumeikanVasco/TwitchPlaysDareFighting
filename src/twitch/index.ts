@@ -33,13 +33,13 @@ export async function twitchInit(){
 
         if (message == "attack"){
             getSocket().then((socket)=>{
-                socket.emit("attack") // This calls jump in the Java code!
+                socket.emit("attack") // This calls punch in the Java code!
             })
         }
 
         if (message == "defence"){
             getSocket().then((socket)=>{
-                socket.emit("defence") // This calls jump in the Java code!
+                socket.emit("defence") // This calls guard in the Java code!
             })
         }
 
