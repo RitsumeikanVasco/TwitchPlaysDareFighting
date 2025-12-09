@@ -18,7 +18,6 @@ export async function twitchInit(){
     const twitchClient: tmi.Client = createBot()
 
     await SessionBot.initSessionBot()
-    await twitchClient.connect()
 
     // Called when you receive a message from Twitch
     twitchClient.on('message', (channel: string, tags: tmi.ChatUserstate, message: string, self: boolean) => {
@@ -50,5 +49,5 @@ export async function twitchInit(){
         }
     })
     
-    twitchClient.connect()
+    await twitchClient.connect()
 }
