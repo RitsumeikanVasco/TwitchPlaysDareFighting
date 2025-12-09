@@ -86,9 +86,9 @@ async function handleJoin(
  * サーバーのエントリポイントから呼び出す想定
  */
 export function startTeamBot() {
-  const username = process.env.TEAM_BOT_USERNAME;
-  const password = process.env.TEAM_BOT_TOKEN;
-  const channelName = process.env.TWITCH_CHANNEL_NAME;
+    const username = process.env.TEAM_BOT_USERNAME;
+    const password = process.env.TEAM_BOT_TOKEN;
+    const channelName = process.env.TWITCH_CHANNEL_NAME;
 
   if (!username || !password || !channelName) {
     console.error(

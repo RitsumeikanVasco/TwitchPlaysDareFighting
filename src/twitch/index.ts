@@ -3,6 +3,7 @@ import tmi from "tmi.js"
 import { createBot } from "./createBot"
 import { getSocket } from "../socket"
 import * as SessionBot from "./SessionBot"
+import * as TeamBot from "./teamBot"
 
 // Types
 import type { TokenResponse } from './../ChatTypes.js';
@@ -18,6 +19,7 @@ export async function twitchInit(){
     const twitchClient: tmi.Client = createBot()
 
     await SessionBot.initSessionBot()
+    await TeamBot.startTeamBot()
 
     // Called when you receive a message from Twitch
     twitchClient.on('message', (channel: string, tags: tmi.ChatUserstate, message: string, self: boolean) => {
