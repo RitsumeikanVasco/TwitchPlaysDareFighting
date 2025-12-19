@@ -1,7 +1,7 @@
 import tmi from "tmi.js"
 import fs from "fs"
 import path from "path"
-import {refreshAccessToken} from "./../functions/refreshAccessToken"
+import {refreshAccessToken, RefreshResponseData} from "./../functions/refreshAccessToken"
 import _botkeys from "./../bot_keys.json" // This is to force file inclusion compilation
 
 interface BotKeys {
@@ -16,7 +16,7 @@ interface BotKeys {
 const JSON_PATH: string = path.join(__dirname, "..", "bot_keys.json")
 const TWITCH_CLIENTS: Map<string, tmi.Client> = new Map()
 
-export function initiateBot(botUsername: string, targetChannelName: string): tmi.Client | null {
+export async function initiateBot(botUsername: string, targetChannelName: string): Promise<tmi.Client | null> {
     if (TWITCH_CLIENTS.has(botUsername)){
         let existingTwitchClient: tmi.Client = TWITCH_CLIENTS.get(botUsername) as tmi.Client
 
@@ -38,24 +38,22 @@ export function initiateBot(botUsername: string, targetChannelName: string): tmi
         return null
     }
 
-    refreshAccessToken(botKeys.client_id, botKeys.client_secret, botKeys.refresh_token)
+    let refreshResponse: RefreshResponseData = await refreshAccessToken(botKeys.client_id, botKeys.client_secret, botKeys.refresh_token)
+    botKeys.access_token = refreshResponse.access_token
+    botKeys.refresh_token = refreshResponse.refresh_token
 
-    return null
-    /*
-    if (twitchClient != null)
-        return twitchClient
+    await fs.writeFileSync(JSON_PATH, JSON.stringify(jsonObject))
 
-    let channelToListenUsername: string = process.env.CHANNEL_NAME as string
-
-    twitchClient = new tmi.Client({
-        channels: [ channelToListenUsername ],
+    let twitchClient = new tmi.Client({
+        channels: [ targetChannelName ],
         identity: {
-            username: process.env.BOT_USERNAME,
-            password: process.env.BOT_TOKEN
+            username: botKeys.username,
+            password: `oauth:${botKeys.access_token}`
         },        
     })
 
-    return twitchClient    
-    */
+    TWITCH_CLIENTS.set(botUsername, twitchClient)
+    twitchClient.connect()
 
+    return twitchClient
 }
