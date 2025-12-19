@@ -1,4 +1,4 @@
-import { createBot } from "./createBot"
+import { initiateBot } from "./initiateBot"
 import tmi from "tmi.js"
 import {getChatters} from "./../functions/getChatters"
 import { EventEmitter } from "events";
@@ -52,7 +52,10 @@ async function loop() {
 }
 
 export async function initSessionBot(){
-    const twitchClient: tmi.Client = createBot()
+    const twitchClient: tmi.Client | null = initiateBot()
+
+    if (!twitchClient)
+        return
 
     twitchClient.on('message', (_channel: string, tags: tmi.ChatUserstate, _message: string, self: boolean) => {
         if (self)
