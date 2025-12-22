@@ -7,21 +7,22 @@ import { getUserId } from "./getUserId";
 export async function getChatters() {
     let botKeys: BotKeys | null = await getBotKeys(bot_keys.twitchPlaysBot.key)
 
-    let userId = await getUserId("prooheckcp", accessToken)
+    let broadcasterId = await getUserId("prooheckcp", bot_keys.twitchPlaysBot.access_token)
+    let botId = await getUserId(bot_keys.twitchPlaysBot.username, bot_keys.twitchPlaysBot.access_token)
 
     let chatters: any[] = [];
     let cursor: string | undefined = undefined;
 
     do {
         const url = new URL("https://api.twitch.tv/helix/chat/chatters");
-        url.searchParams.set("broadcaster_id", userId);
-        url.searchParams.set("moderator_id", userId);
+        url.searchParams.set("broadcaster_id", broadcasterId);
+        url.searchParams.set("moderator_id", botId);
         if (cursor) url.searchParams.set("after", cursor);
 
         const res = await axios.get(url.toString(), {
             headers: {
-                "Client-Id": process.env.CLIENT_ID!,
-                "Authorization": `Bearer ${accessToken}`
+                "Client-Id": botKeys?.client_id,
+                "Authorization": `Bearer ${botKeys?.access_token}`
             }
         });
 

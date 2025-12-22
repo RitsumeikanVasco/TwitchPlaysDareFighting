@@ -31,6 +31,8 @@ function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/*
+
 async function cacheChatUsers(){
     const chatters = await getChatters() // array of { user_id, user_login, user_name }
     const currentUserIds = chatters.map(u => u.user_id)
@@ -45,17 +47,22 @@ async function cacheChatUsers(){
         }
     })
 }
+*/
+
 
 async function loop() {
     while (true) {
         await sleep(UPDATE_RATE_SECONDS * 1000);
-        await cacheChatUsers()
+        // await cacheChatUsers()
     }
 }
 
 export async function initSessionBot(){
+    console.log("Init session bot > 1")
     const twitchClient: tmi.Client | null = await initiateBot(bot_keys.twitchPlaysBot.key, Config.target_channel)
+    console.log("Init session bot > 2")
 
+    /*
     if (!twitchClient)
         return
 
@@ -72,7 +79,7 @@ export async function initSessionBot(){
         checkPlayerJoined(userId)
     })
 
-    cacheChatUsers()
+    // cacheChatUsers()
     loop()
 
     sessionsEmitter.on("Join", (playerId)=>{
@@ -81,5 +88,7 @@ export async function initSessionBot(){
 
     sessionsEmitter.on("Leave", (playerId)=>{
         console.log("Leave", playerId)
-    })
+    })    
+    */
+
 }

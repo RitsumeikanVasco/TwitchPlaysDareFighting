@@ -49,6 +49,9 @@ export async function initiateBot(botUsername: string, targetChannelName: string
     botKeys.access_token = refreshResponse.access_token
     botKeys.refresh_token = refreshResponse.refresh_token
 
+    jsonObject[botUsername].access_token = refreshResponse.access_token
+    jsonObject[botUsername].refresh_token = refreshResponse.refresh_token
+
     await fs.writeFileSync(JSON_PATH, JSON.stringify(jsonObject))
 
     let twitchClient = new tmi.Client({
@@ -59,8 +62,17 @@ export async function initiateBot(botUsername: string, targetChannelName: string
         },        
     })
 
-    TWITCH_CLIENTS.set(botUsername, twitchClient)
-    twitchClient.connect()
-
-    return twitchClient
+    try {
+        TWITCH_CLIENTS.set(botUsername, twitchClient)
+        await twitchClient.connect()
+        console.log(`Successfully connected ${botUsername} to ${targetChannelName}`);
+        return twitchClient;
+    } catch (err) {
+        // If the error is "Login unsuccessful", we catch it here
+        console.error(`Failed to connect bot ${botUsername}:`, err);
+        
+        // Clean up the map if connection fails
+        TWITCH_CLIENTS.delete(botUsername);
+        return null;
+    }
 }
