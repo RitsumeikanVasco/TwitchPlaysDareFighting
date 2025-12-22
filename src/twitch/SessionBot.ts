@@ -53,6 +53,23 @@ async function loop() {
     }
 }
 
+/*
+    Can connect to the sessions emitters with the following code:
+
+    ``js
+    sessionsEmitter.on("Join", (playerId)=>{
+        console.log("Join", playerId)
+    })
+
+    sessionsEmitter.on("Leave", (playerId)=>{
+        console.log("Leave", playerId)
+    })
+    ``
+*/
+export function getSessionsEmitter(){
+    return sessionsEmitter
+}
+
 export async function initSessionBot(){
     const twitchClient: tmi.Client | null = await initiateBot(bot_keys.twitchPlaysBot, Config.target_channel)
 
