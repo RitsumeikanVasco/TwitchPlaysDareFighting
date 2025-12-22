@@ -1,10 +1,13 @@
 import axios from "axios";
 import API from "./../API.json"
 import bot_keys from "./../../bot_keys.json"
-import {getBotKeys, BotKeys} from "./initiateBot"
+// import {getBotKeys, BotKeys} from "./initiateBot"
+
 import { getUserId } from "./getUserId";
 
 export async function getChatters() {
+    return [{user_id: ""}]
+    /*
     let botKeys: BotKeys | null = await getBotKeys(bot_keys.twitchPlaysBot.key)
 
     let broadcasterId = await getUserId("prooheckcp", bot_keys.twitchPlaysBot.access_token)
@@ -30,5 +33,6 @@ export async function getChatters() {
         cursor = res.data.pagination?.cursor; // undefined if last page
     } while (cursor);
 
-    return chatters;
+    return chatters;    
+    */
 }

@@ -54,7 +54,7 @@ async function loop() {
 }
 
 export async function initSessionBot(){
-    const twitchClient: tmi.Client | null = await initiateBot(bot_keys.twitchPlaysBot.key, Config.target_channel)
+    const twitchClient: tmi.Client | null = await initiateBot(bot_keys.twitchPlaysBot, Config.target_channel)
 
     if (!twitchClient)
         return

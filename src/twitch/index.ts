@@ -1,14 +1,11 @@
-import {getToken} from "./../functions/getToken"
 import tmi from "tmi.js"
 import { initiateBot } from "../functions/initiateBot"
 import { getSocket } from "../socket"
 import * as SessionBot from "./SessionBot"
 import * as TeamBot from "./teamBot"
 
-import { createClient } from '@supabase/supabase-js'
-
 export async function twitchInit(){
-    // await SessionBot.initSessionBot()
+    await SessionBot.initSessionBot()
     // await TeamBot.startTeamBot()
 
     /*

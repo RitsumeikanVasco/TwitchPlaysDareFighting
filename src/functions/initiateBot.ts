@@ -1,27 +1,9 @@
 import tmi from "tmi.js"
-import fs from "fs"
-import path from "path"
 import {refreshAccessToken, RefreshResponseData} from "./refreshAccessToken"
-import _botkeys from "../../bot_keys.json" // This is to force file inclusion compilation
+import bot_keys from "../../bot_keys.json" // This is to force file inclusion compilation
+import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
 
-export interface BotKeys {
-    key: string;
-    username: string;
-    refresh_token: string;
-    access_token: string;
-    client_id: string;
-    client_secret: string;
-}
-
-const JSON_PATH: string = path.join(__dirname, "..", "..", "bot_keys.json")
 const TWITCH_CLIENTS: Map<string, tmi.Client> = new Map()
-
-export function getBotKeys(botUsername: string): BotKeys | null{
-    let file = fs.readFileSync(JSON_PATH, 'utf8')
-    let jsonObject = JSON.parse(file)
-    
-    return jsonObject[botUsername] || null
-}
 
 export async function initiateBot(botUsername: string, targetChannelName: string): Promise<tmi.Client | null> {
     if (TWITCH_CLIENTS.has(botUsername)){
@@ -30,10 +12,8 @@ export async function initiateBot(botUsername: string, targetChannelName: string
         return existingTwitchClient
     }
 
-    let file = fs.readFileSync(JSON_PATH, 'utf8')
-    let jsonObject = JSON.parse(file)
-    let botKeys: BotKeys = jsonObject[botUsername]
-
+    let botKeys: BotKeys | null = await getBotKeys(bot_keys.twitchPlaysBot)
+    
     if (
         !botKeys || 
         !botKeys.access_token ||
@@ -49,10 +29,7 @@ export async function initiateBot(botUsername: string, targetChannelName: string
     botKeys.access_token = refreshResponse.access_token
     botKeys.refresh_token = refreshResponse.refresh_token
 
-    jsonObject[botUsername].access_token = refreshResponse.access_token
-    jsonObject[botUsername].refresh_token = refreshResponse.refresh_token
-
-    await fs.writeFileSync(JSON_PATH, JSON.stringify(jsonObject))
+    setBotKeys(bot_keys.twitchPlaysBot, botKeys)
 
     let twitchClient = new tmi.Client({
         channels: [ targetChannelName ],
