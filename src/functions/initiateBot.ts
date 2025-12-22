@@ -1,10 +1,10 @@
 import tmi from "tmi.js"
 import fs from "fs"
 import path from "path"
-import {refreshAccessToken, RefreshResponseData} from "./../functions/refreshAccessToken"
-import _botkeys from "./../bot_keys.json" // This is to force file inclusion compilation
+import {refreshAccessToken, RefreshResponseData} from "./refreshAccessToken"
+import _botkeys from "../bot_keys.json" // This is to force file inclusion compilation
 
-interface BotKeys {
+export interface BotKeys {
     key: string;
     username: string;
     refresh_token: string;
@@ -15,6 +15,13 @@ interface BotKeys {
 
 const JSON_PATH: string = path.join(__dirname, "..", "bot_keys.json")
 const TWITCH_CLIENTS: Map<string, tmi.Client> = new Map()
+
+export function getBotKeys(botUsername: string): BotKeys | null{
+    let file = fs.readFileSync(JSON_PATH, 'utf8')
+    let jsonObject = JSON.parse(file)
+    
+    return jsonObject[botUsername] || null
+}
 
 export async function initiateBot(botUsername: string, targetChannelName: string): Promise<tmi.Client | null> {
     if (TWITCH_CLIENTS.has(botUsername)){

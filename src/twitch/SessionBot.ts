@@ -1,7 +1,9 @@
-import { initiateBot } from "./initiateBot"
+import { initiateBot } from "../functions/initiateBot"
 import tmi from "tmi.js"
+import bot_keys from "./../bot_keys.json"
 import {getChatters} from "./../functions/getChatters"
 import { EventEmitter } from "events";
+import Config from "./../Config.json"
 
 const UPDATE_RATE_SECONDS = 10
 
@@ -52,12 +54,13 @@ async function loop() {
 }
 
 export async function initSessionBot(){
-    const twitchClient: tmi.Client | null = initiateBot()
+    const twitchClient: tmi.Client | null = await initiateBot(bot_keys.twitchPlaysBot.key, Config.target_channel)
 
     if (!twitchClient)
         return
 
     twitchClient.on('message', (_channel: string, tags: tmi.ChatUserstate, _message: string, self: boolean) => {
+        console.log(`Message: ${_message}`)
         if (self)
             return
 
