@@ -1,6 +1,6 @@
 import { initiateBot } from "../functions/initiateBot"
 import tmi from "tmi.js"
-import bot_keys from "./../bot_keys.json"
+import bot_keys from "./../../bot_keys.json"
 import {getChatters} from "./../functions/getChatters"
 import { EventEmitter } from "events";
 import Config from "./../Config.json"
@@ -31,8 +31,6 @@ function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-/*
-
 async function cacheChatUsers(){
     const chatters = await getChatters() // array of { user_id, user_login, user_name }
     const currentUserIds = chatters.map(u => u.user_id)
@@ -47,8 +45,6 @@ async function cacheChatUsers(){
         }
     })
 }
-*/
-
 
 async function loop() {
     while (true) {
@@ -58,11 +54,8 @@ async function loop() {
 }
 
 export async function initSessionBot(){
-    console.log("Init session bot > 1")
     const twitchClient: tmi.Client | null = await initiateBot(bot_keys.twitchPlaysBot.key, Config.target_channel)
-    console.log("Init session bot > 2")
 
-    /*
     if (!twitchClient)
         return
 
@@ -79,7 +72,7 @@ export async function initSessionBot(){
         checkPlayerJoined(userId)
     })
 
-    // cacheChatUsers()
+    cacheChatUsers()
     loop()
 
     sessionsEmitter.on("Join", (playerId)=>{
@@ -88,7 +81,5 @@ export async function initSessionBot(){
 
     sessionsEmitter.on("Leave", (playerId)=>{
         console.log("Leave", playerId)
-    })    
-    */
-
+    })
 }

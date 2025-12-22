@@ -2,7 +2,7 @@ import tmi from "tmi.js"
 import fs from "fs"
 import path from "path"
 import {refreshAccessToken, RefreshResponseData} from "./refreshAccessToken"
-import _botkeys from "../bot_keys.json" // This is to force file inclusion compilation
+import _botkeys from "../../bot_keys.json" // This is to force file inclusion compilation
 
 export interface BotKeys {
     key: string;
@@ -13,7 +13,7 @@ export interface BotKeys {
     client_secret: string;
 }
 
-const JSON_PATH: string = path.join(__dirname, "..", "bot_keys.json")
+const JSON_PATH: string = path.join(__dirname, "..", "..", "bot_keys.json")
 const TWITCH_CLIENTS: Map<string, tmi.Client> = new Map()
 
 export function getBotKeys(botUsername: string): BotKeys | null{

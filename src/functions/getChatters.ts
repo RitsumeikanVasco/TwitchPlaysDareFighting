@@ -1,6 +1,6 @@
 import axios from "axios";
 import API from "./../API.json"
-import bot_keys from "./../bot_keys.json"
+import bot_keys from "./../../bot_keys.json"
 import {getBotKeys, BotKeys} from "./initiateBot"
 import { getUserId } from "./getUserId";
 
