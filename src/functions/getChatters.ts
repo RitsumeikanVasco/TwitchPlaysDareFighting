@@ -9,8 +9,8 @@ export async function getChatters() {
     if (!botKeys)
         return []
 
-    let broadcasterId = await getUserId("prooheckcp", botKeys.access_token)
-    let botId = await getUserId(botKeys.username, botKeys.access_token)
+    let broadcasterId = await getUserId("prooheckcp", botKeys.access_token, botKeys.client_id)
+    let botId = await getUserId(botKeys.username, botKeys.access_token, botKeys.client_id)
 
     let chatters: any[] = [];
     let cursor: string | undefined = undefined;
