@@ -5,6 +5,8 @@ import { getSocket } from "../socket"
 import * as SessionBot from "./SessionBot"
 import * as TeamBot from "./teamBot"
 
+import { createClient } from '@supabase/supabase-js'
+
 export async function twitchInit(){
     // await SessionBot.initSessionBot()
     // await TeamBot.startTeamBot()

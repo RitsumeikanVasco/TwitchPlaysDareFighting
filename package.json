@@ -17,10 +17,12 @@
     "@types/express": "^5.0.5",
     "@types/node": "^24.10.1",
     "@types/tmi.js": "^1.8.6",
+    "supabase": "^2.67.3",
     "typescript": "^5.9.3"
   },
   "dependencies": {
     "@supabase/auth-js": "^2.89.0",
+    "@supabase/supabase-js": "^2.89.0",
     "axios": "^1.13.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
