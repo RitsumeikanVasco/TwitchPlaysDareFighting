@@ -1,12 +1,20 @@
 import axios from "axios";
-import API from "./../API.json"
 
-export async function refreshAccessToken() {
+export interface RefreshResponseData {
+    access_token: string;
+    refresh_token: string;
+}
+
+export async function refreshAccessToken(
+  clientId: string, 
+  clientSecret: string, 
+  refreshToken: string
+) {
   const params = new URLSearchParams({
-    client_id: process.env.CLIENT_ID!,
-    client_secret: process.env.CLIENT_SECRET!,
+    client_id: clientId,
+    client_secret: clientSecret,
     grant_type: "refresh_token",
-    refresh_token: API.refresh
+    refresh_token: refreshToken
   });
 
   const res = await axios.post("https://id.twitch.tv/oauth2/token", params);

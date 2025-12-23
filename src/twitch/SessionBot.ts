@@ -1,7 +1,9 @@
-import { createBot } from "./createBot"
+import { initiateBot } from "../functions/initiateBot"
 import tmi from "tmi.js"
+import bot_keys from "./../../bot_keys.json"
 import {getChatters} from "./../functions/getChatters"
 import { EventEmitter } from "events";
+import Config from "./../Config.json"
 
 const UPDATE_RATE_SECONDS = 10
 
@@ -47,14 +49,35 @@ async function cacheChatUsers(){
 async function loop() {
     while (true) {
         await sleep(UPDATE_RATE_SECONDS * 1000);
-        await cacheChatUsers()
+        // await cacheChatUsers()
     }
 }
 
+/*
+    Can connect to the sessions emitters with the following code:
+
+    ``js
+    sessionsEmitter.on("Join", (playerId)=>{
+        console.log("Join", playerId)
+    })
+
+    sessionsEmitter.on("Leave", (playerId)=>{
+        console.log("Leave", playerId)
+    })
+    ``
+*/
+export function getSessionsEmitter(){
+    return sessionsEmitter
+}
+
 export async function initSessionBot(){
-    const twitchClient: tmi.Client = createBot()
+    const twitchClient: tmi.Client | null = await initiateBot(bot_keys.twitchPlaysBot, Config.target_channel)
+
+    if (!twitchClient)
+        return
 
     twitchClient.on('message', (_channel: string, tags: tmi.ChatUserstate, _message: string, self: boolean) => {
+        console.log(`Message: ${_message}`)
         if (self)
             return
 

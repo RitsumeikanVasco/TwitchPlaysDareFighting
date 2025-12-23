@@ -3,5 +3,7 @@
     "socket_port": 3001,
 
     "database_port": 27017,
-    "database_name": "testEnvironment"
+    "database_name": "testEnvironment",
+
+    "target_channel": "prooheckcp"
 }
