@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function getUserId(username: string, accessToken: string, clientId: string) {
+export async function getUserIdFromUsername(username: string, accessToken: string, clientId: string) {
     const res = await axios.get(`https://api.twitch.tv/helix/users?login=${username}`, {
         headers: {
             "Client-Id": clientId,

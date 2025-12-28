@@ -1,7 +1,7 @@
 import axios from "axios";
 import bot_keys from "./../../bot_keys.json"
 import {getBotKeys, BotKeys} from "./../Database"
-import { getUserId } from "./getUserId";
+import { getUserId } from "./getUserIdFromUsername";
 
 export async function getChatters() {
     let botKeys: BotKeys | null = await getBotKeys(bot_keys.twitchPlaysBot)

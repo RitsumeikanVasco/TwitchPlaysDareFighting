@@ -4,27 +4,35 @@ import bot_keys from "./../../bot_keys.json"
 import {getChatters} from "./../functions/getChatters"
 import { EventEmitter } from "events";
 import Config from "./../Config.json"
+import {getUsernameFromId} from "../functions/getUsernameFromId"
+
+import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
+
 
 const UPDATE_RATE_SECONDS = 10
+const WELCOME_WHISPER = "Welcome to the Stream!"
 
-let playerSessions = new Map()
-
+let usernameToId: Map<string, string> = new Map()
+let playerSessions: Map<string, string> = new Map()
 let sessionsEmitter = new EventEmitter()
 
-function checkPlayerJoined(playerId: string){
+function checkPlayerJoined(playerId: string, username: string){
     if (playerSessions.has(playerId))
         return
 
-    playerSessions.set(playerId, Date.now())
-    sessionsEmitter.emit("Join", playerId)
+    usernameToId.set(username, playerId)
+    playerSessions.set(playerId, username)
+    sessionsEmitter.emit("Join", playerId, username)
 }
 
 function checkPlayerLeft(playerId: string){
     if (!playerSessions.has(playerId))
         return
 
+    let username: string = playerSessions.get(playerId) as string
+    usernameToId.delete(username)
     playerSessions.delete(playerId)
-    sessionsEmitter.emit("Leave", playerId)
+    sessionsEmitter.emit("Leave", playerId, username)
 }
 
 function sleep(ms: number) {
@@ -34,9 +42,15 @@ function sleep(ms: number) {
 async function cacheChatUsers(){
     const chatters = await getChatters() // array of { user_id, user_login, user_name }
     const currentUserIds = chatters.map(u => u.user_id)
+    let botKeys: BotKeys | null = await getBotKeys(bot_keys.twitchPlaysBot)
 
-    currentUserIds.forEach(userId => {
-        checkPlayerJoined(userId)
+    if (!botKeys)
+        return
+
+    currentUserIds.forEach(async userId => {
+        let userName: string = await getUsernameFromId(userId, botKeys.access_token, botKeys.client_id)
+
+        checkPlayerJoined(userId, userName)
     })
 
     Array.from(playerSessions.keys()).forEach(userId => {
@@ -70,23 +84,44 @@ export function getSessionsEmitter(){
     return sessionsEmitter
 }
 
+export function getUserIdFromUsername(username: string): string | null{
+    return usernameToId.get(username) || null
+}
+
+export function getUsernameFromUserId(userid: string): string | null{
+    return playerSessions.get(userid) || null
+}
+
+export function getSessionUsers(): Map<string, string> {
+    return playerSessions
+}
+
 export async function initSessionBot(){
     const twitchClient: tmi.Client | null = await initiateBot(bot_keys.twitchPlaysBot, Config.target_channel)
 
     if (!twitchClient)
         return
 
-    twitchClient.on('message', (_channel: string, tags: tmi.ChatUserstate, _message: string, self: boolean) => {
-        console.log(`Message: ${_message}`)
+    twitchClient.on("whisper", (from: string, userstate: tmi.ChatUserstate, message: string, self: boolean) =>{
+        console.log(`[Whisper]: ${message}`)
+        sessionsEmitter.emit("Whisper", userstate, message)
+    })
+
+    // Send Welcome message
+    sessionsEmitter.on("Join", (_, username: string) => {
+        twitchClient.whisper(username as string, WELCOME_WHISPER)
+    })
+
+    twitchClient.on('message', async (_channel: string, tags: tmi.ChatUserstate, _message: string, self: boolean) => {
+        let userId: string = tags["user-id"] as string
+
         if (self)
             return
-
-        let userId: string | undefined = tags["user-id"]
 
         if (userId == undefined)
             return
 
-        checkPlayerJoined(userId)
+        checkPlayerJoined(userId, tags.username as string)
     })
 
     cacheChatUsers()
