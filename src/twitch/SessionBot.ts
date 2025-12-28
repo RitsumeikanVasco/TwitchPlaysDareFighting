@@ -13,7 +13,7 @@ const UPDATE_RATE_SECONDS = 10
 const WELCOME_WHISPER = "Welcome to the Stream!"
 
 let usernameToId: Map<string, string> = new Map()
-let playerSessions: Map<string, string> = new Map()
+export let playerSessions: Map<string, string> = new Map()
 
 /*
     Can connect to the sessions emitters with the following code:
@@ -79,10 +79,6 @@ async function loop() {
         await sleep(UPDATE_RATE_SECONDS * 1000);
         // await cacheChatUsers()
     }
-}
-
-export function getSessionsEmitter(){
-    return sessionsEmitter
 }
 
 export function getUserIdFromUsername(username: string): string | null{

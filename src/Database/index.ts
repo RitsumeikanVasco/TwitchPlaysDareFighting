@@ -2,6 +2,15 @@ import mongoose from "mongoose"
 import PlayerData from "./schemas/PlayerData"
 import Config from "./../Config.json"
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import {sessionsEmitter, playerSessions} from "../twitch/SessionBot"
+
+type PlayerData = {
+    points: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+}
 
 export interface BotKeys {
     username: string;
@@ -17,8 +26,38 @@ mongoose.connection.on("connected", () => {
     console.log("Connected to MongoDB Server ✅");
 })
 
-let playerDataModel;
+type PlayerDataModel = mongoose.Model<{ points: number; }, {}, {}, { id: string; }, mongoose.Document<unknown, {}, { points: number; }, { id: string; }, mongoose.DefaultSchemaOptions>>
+
+let playerDataModel: PlayerDataModel;
 let supabase: SupabaseClient;
+
+
+export let playersData: Map<string, PlayerData> = new Map()
+
+// Join and Leave logic
+function playerJoin(userid: string){
+
+}
+
+function playerLeft(userid: string){
+
+}
+
+function sessionInit(){
+    sessionsEmitter.on("Join", (userid) => {
+        playerJoin(userid)
+    })
+
+    sessionsEmitter.on("Leave", (userid) => {
+        playerLeft(userid)
+    })
+
+    playerSessions.forEach((_, userid) => {
+        playerJoin(userid)
+    })
+}
+
+///////////////
 
 export function getSupabase(): SupabaseClient{
     return supabase
@@ -70,7 +109,7 @@ export async function databaseInit(){
     await mongoose.connect(`mongodb://127.0.0.1:${Config.database_port}/${Config.database_name}`);
     playerDataModel = mongoose.model("PlayerData", PlayerData)
 
-    // Setup system with getters and emitters
+    sessionInit()
 
     supabase = createClient("https://kkogokcphyhvdftbxsyw.supabase.co", "sb_publishable_u8YlTvC2gaQ1Np38aB6gxA_TPJSMdMJ")
 } 
