@@ -1,8 +1,9 @@
-import mongoose from "mongoose"
+import mongoose, { mongo } from "mongoose"
 import PlayerData from "./schemas/PlayerData"
 import Config from "./../Config.json"
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import {sessionsEmitter, playerSessions} from "../twitch/SessionBot"
+import { EventEmitter } from "events";
 
 type PlayerData = {
     points: {
@@ -31,16 +32,35 @@ type PlayerDataModel = mongoose.Model<{ points: number; }, {}, {}, { id: string;
 let playerDataModel: PlayerDataModel;
 let supabase: SupabaseClient;
 
-
-export let playersData: Map<string, PlayerData> = new Map()
+export let playersData: Map<string, mongoose.Document<PlayerData>> = new Map()
+export let databaseEmitter = new EventEmitter()
 
 // Join and Leave logic
-function playerJoin(userid: string){
+async function playerJoin(userid: string){
+    if(playersData.has(userid))
+        return
 
+    let player: mongoose.Document<PlayerData> = await playerDataModel.findOneAndUpdate(
+        {_id: userid},
+        {},
+        { 
+            upsert: true,            // 3. Create if it doesn't exist
+            new: true,               // 4. Return the updated/new document
+            setDefaultsOnInsert: true // 5. Apply schema defaults
+        }
+    )
+
+    playersData.set(userid, player)
+    databaseEmitter.emit("Join", userid, player)
 }
 
 function playerLeft(userid: string){
+    if(!playersData.has(userid))
+        return
 
+    let playerData = playersData.get(userid)
+    playersData.delete(userid)
+    databaseEmitter.emit("Leave", userid, playerData)
 }
 
 function sessionInit(){
