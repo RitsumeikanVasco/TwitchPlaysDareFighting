@@ -1,7 +1,7 @@
 import axios from "axios";
 import bot_keys from "./../../bot_keys.json"
 import {getBotKeys, BotKeys} from "./../Database"
-import { getUserId } from "./getUserIdFromUsername";
+import { getUserIdFromUsername } from "./getUserIdFromUsername";
 
 export async function getChatters() {
     let botKeys: BotKeys | null = await getBotKeys(bot_keys.twitchPlaysBot)
@@ -9,8 +9,8 @@ export async function getChatters() {
     if (!botKeys)
         return []
 
-    let broadcasterId = await getUserId("prooheckcp", botKeys.access_token, botKeys.client_id)
-    let botId = await getUserId(botKeys.username, botKeys.access_token, botKeys.client_id)
+    let broadcasterId = await getUserIdFromUsername("prooheckcp", botKeys.access_token, botKeys.client_id)
+    let botId = await getUserIdFromUsername(botKeys.username, botKeys.access_token, botKeys.client_id)
 
     let chatters: any[] = [];
     let cursor: string | undefined = undefined;

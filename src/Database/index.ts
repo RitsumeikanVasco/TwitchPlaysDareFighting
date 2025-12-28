@@ -70,5 +70,7 @@ export async function databaseInit(){
     await mongoose.connect(`mongodb://127.0.0.1:${Config.database_port}/${Config.database_name}`);
     playerDataModel = mongoose.model("PlayerData", PlayerData)
 
+    // Setup system with getters and emitters
+
     supabase = createClient("https://kkogokcphyhvdftbxsyw.supabase.co", "sb_publishable_u8YlTvC2gaQ1Np38aB6gxA_TPJSMdMJ")
 } 

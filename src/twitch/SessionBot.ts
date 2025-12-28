@@ -14,7 +14,21 @@ const WELCOME_WHISPER = "Welcome to the Stream!"
 
 let usernameToId: Map<string, string> = new Map()
 let playerSessions: Map<string, string> = new Map()
-let sessionsEmitter = new EventEmitter()
+
+/*
+    Can connect to the sessions emitters with the following code:
+
+    ``js
+    sessionsEmitter.on("Join", (playerId, username)=>{
+        console.log("Join", playerId)
+    })
+
+    sessionsEmitter.on("Leave", (playerId, username)=>{
+        console.log("Leave", playerId)
+    })
+    ``
+*/
+export let sessionsEmitter = new EventEmitter()
 
 function checkPlayerJoined(playerId: string, username: string){
     if (playerSessions.has(playerId))
@@ -67,19 +81,6 @@ async function loop() {
     }
 }
 
-/*
-    Can connect to the sessions emitters with the following code:
-
-    ``js
-    sessionsEmitter.on("Join", (playerId)=>{
-        console.log("Join", playerId)
-    })
-
-    sessionsEmitter.on("Leave", (playerId)=>{
-        console.log("Leave", playerId)
-    })
-    ``
-*/
 export function getSessionsEmitter(){
     return sessionsEmitter
 }
@@ -103,12 +104,16 @@ export async function initSessionBot(){
         return
 
     twitchClient.on("whisper", (from: string, userstate: tmi.ChatUserstate, message: string, self: boolean) =>{
-        console.log(`[Whisper]: ${message}`)
+        if (self)
+            return;
+
+        console.log(`[Whisper]: From: ${from} Message: ${message}`)
         sessionsEmitter.emit("Whisper", userstate, message)
     })
 
     // Send Welcome message
     sessionsEmitter.on("Join", (_, username: string) => {
+        console.log(`Send whisper: ${username}`)
         twitchClient.whisper(username as string, WELCOME_WHISPER)
     })
 
