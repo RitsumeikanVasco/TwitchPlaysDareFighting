@@ -53,7 +53,7 @@ async function playerJoin(userid: string){
             setDefaultsOnInsert: true // 5. Apply schema defaults
         }
     )
-
+    
     playersData.set(userid, player)
     databaseEmitter.emit("Join", userid, player)
 }
@@ -80,8 +80,37 @@ function sessionInit(){
         playerJoin(userid)
     })
 }
-
 ///////////////
+
+// Utility Methods
+export function has(userid: string, index: string): boolean {
+    if (!playersData.has(userid))
+        return false
+
+    let value = playersData.get(userid)?.get(index) || null
+
+    return value != null
+}
+
+export function get(userid: string, index: string): any {
+    if (!has(userid, index))
+        return null
+
+    return playersData.get(userid)?.get(index)
+}
+
+export function set(userid: string, index: string, newValue: any){
+    let currentValue: any | null = get(userid, index)
+
+    if (currentValue == null || currentValue == newValue)
+        return // nothing to update
+
+    let playerDocument: mongoose.Document<PlayerData> = playersData.get(userid) as mongoose.Document<PlayerData>
+    playerDocument.set(index, newValue)
+    playerDocument.save()
+    databaseEmitter.emit("ValueChanged", userid, index, newValue) // trigger for changes
+}
+//////////////////
 
 export function getSupabase(): SupabaseClient{
     return supabase
