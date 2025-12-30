@@ -9,8 +9,10 @@ https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=YOUR_CLIENT_
 
 require("dotenv").config();
 
+import initializeModules from "./functions/initializeModules"
 import express from 'express'
 import Config from "./Config.json"
+import path from 'path'
 
 import {socketInit} from "./socket/index"
 import {twitchInit} from "./twitch/index"
@@ -22,4 +24,6 @@ app.listen(Config.port, async () => {
     await databaseInit()
     await socketInit()
     await twitchInit()
+
+    initializeModules(path.join(__dirname, "services"))
 })
