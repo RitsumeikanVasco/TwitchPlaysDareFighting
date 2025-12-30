@@ -107,12 +107,6 @@ export async function initSessionBot(){
         sessionsEmitter.emit("Whisper", userstate, message)
     })
 
-    // Send Welcome message
-    sessionsEmitter.on("Join", (_, username: string) => {
-        console.log(`Send whisper: ${username}`)
-        twitchClient.whisper(username as string, WELCOME_WHISPER)
-    })
-
     twitchClient.on('message', async (_channel: string, tags: tmi.ChatUserstate, _message: string, self: boolean) => {
         let userId: string = tags["user-id"] as string
 
@@ -127,12 +121,4 @@ export async function initSessionBot(){
 
     cacheChatUsers()
     loop()
-
-    sessionsEmitter.on("Join", (playerId)=>{
-        console.log("Join", playerId)
-    })
-
-    sessionsEmitter.on("Leave", (playerId)=>{
-        console.log("Leave", playerId)
-    })
 }

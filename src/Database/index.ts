@@ -6,6 +6,10 @@ import {sessionsEmitter, playerSessions} from "../twitch/SessionBot"
 import { EventEmitter } from "events";
 
 type PlayerData = {
+    _id: { 
+        type: String, 
+        required: true 
+    },
     points: {
         type: Number,
         required: true,
@@ -27,7 +31,7 @@ mongoose.connection.on("connected", () => {
     console.log("Connected to MongoDB Server ✅");
 })
 
-type PlayerDataModel = mongoose.Model<{ points: number; }, {}, {}, { id: string; }, mongoose.Document<unknown, {}, { points: number; }, { id: string; }, mongoose.DefaultSchemaOptions>>
+type PlayerDataModel = mongoose.Model<{ points: number; _id: string }, {}, {}, { id: string; }, mongoose.Document<unknown, {}, { points: number; }, { id: string; }, mongoose.DefaultSchemaOptions>>
 
 let playerDataModel: PlayerDataModel;
 let supabase: SupabaseClient;
