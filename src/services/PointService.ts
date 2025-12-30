@@ -1,28 +1,43 @@
-import {playersData, databaseEmitter, get, set} from "../Database/index"
-import mongoose, { mongo } from "mongoose"
-import { EventEmitter } from "events";
+import {get, set, has} from "../Database/index"
 
-function getPlayerData(userid: string){
-    return playersData.get(userid)
+export function getPoints(userid: string): number {
+    if (!has(userid, "points"))
+        return 0
+
+    return get(userid, "points") as number
 }
 
 export function givePoints(userid: string, points: number){
-    if (!playersData.has(userid))
+    if (!has(userid, "points") || points == 0)
         return
 
-    playersData.get(userid)
+    let currentPoints: number = getPoints(userid)
+
+    set(userid, "points", currentPoints + points)
 }
 
-export function getPoints(userid: string): number {
+export function removePoints(userid: string, points: number){
+    if (!has(userid, "points") || points == 0)
+        return
 
+    let currentPoints: number = getPoints(userid)
+    let newPoints: number = Math.max(0, currentPoints - points)
+
+    set(userid, "points", newPoints)
 }
 
 export function hasPoints(userid: string, points: number): boolean {
+    let currentPoints: number = getPoints(userid)
 
+    return currentPoints >= points
 }
 
 export function purchase(userid: string, points: number, callback: () => boolean){
+    if (!hasPoints(userid, points))
+        return
 
+    if (callback())
+        removePoints(userid, points)
 }
 
 export function init(){
