@@ -5,7 +5,7 @@ import {getChatters} from "./../functions/getChatters"
 import { EventEmitter } from "events";
 import Config from "./../Config.json"
 import {getUsernameFromId} from "../functions/getUsernameFromId"
-
+import sleep from "./../functions/sleep"
 import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
 
 
@@ -47,10 +47,6 @@ function checkPlayerLeft(playerId: string){
     usernameToId.delete(username)
     playerSessions.delete(playerId)
     sessionsEmitter.emit("Leave", playerId, username)
-}
-
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function cacheChatUsers(){
