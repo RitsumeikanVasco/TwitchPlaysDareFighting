@@ -4,18 +4,18 @@ import {getSocket} from "../socket/index"
 
 export function sendAction(team: Team, action: Action){
     getSocket().then((socket)=>{
-        socket.emit(team, action)
+        socket.emit("action", team, action)
     })
 }
 
 export function stopAction(team: Team, action: Action){
     getSocket().then((socket)=>{
-        socket.emit(team, action)
+        socket.emit("stopAction", team, action)
     })
 }
 
 export function stopAllActions(team: Team){
     getSocket().then((socket)=>{
-        socket.emit(team)
+        socket.emit("stopAllActions", team)
     })
 }
