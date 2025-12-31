@@ -1,10 +1,11 @@
 import http from "http"
 import {Server} from "socket.io"
 import Config from "./../Config.json"
+import sleep from "./../functions/sleep"
 
 const CONNECTION_MESSAGE: string = "Client connected"
 
-let io: Server
+let io: Server;
 
 export async function socketInit(){
     const server = http.createServer()
@@ -21,5 +22,8 @@ export async function socketInit(){
 }
 
 export async function getSocket(){
+    while(io == undefined)
+        sleep(500)
+    
     return io
 }
