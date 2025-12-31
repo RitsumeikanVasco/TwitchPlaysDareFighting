@@ -8,6 +8,12 @@ export function sendAction(team: Team, action: Action){
     })
 }
 
+export function sendOneTimeAction(team: Team, action: Action){
+    getSocket().then((socket) =>{
+        socket.emit("oneaction", team, action)
+    })
+}
+
 export function stopAction(team: Team, action: Action){
     getSocket().then((socket)=>{
         socket.emit("stopAction", team, action)
