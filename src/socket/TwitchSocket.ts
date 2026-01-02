@@ -3,6 +3,8 @@ import {Server} from "socket.io"
 import Config from "./../Config.json"
 import sleep from "./../functions/sleep"
 import jwt from "jsonwebtoken" // Import JWT library
+import {databaseEmitter} from "../Database/index"
+import {getPoints} from "../services/PointService"
 
 type auth = {
     token: string,
@@ -57,7 +59,32 @@ export default async function TwitchSocketInit(){
     })
 
     io.on("connection", (socket) => {
-        console.log(`User Connected! ${socket.handshake.auth.userId}`)
+        const auth: auth = socket.handshake.auth as auth
+        const id = auth.userId
+
+        function updateValues(){
+            socket.emit("updatedValues", getPoints(id))
+        }
+
+        databaseEmitter.on("Join", (userId)=>{
+            if (id != userId)
+                return
+
+            updateValues()
+        })
+
+        databaseEmitter.on("ValueChanged", (userid =>{
+            if (id != userid)
+                return
+
+            updateValues()
+        }))
+
+        socket.on("getPoints", (callback)=>{
+            callback(getPoints(id))
+        })
+
+        console.log(`User Connected! ${auth.userId}`)
     })
 }
 
