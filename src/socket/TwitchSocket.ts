@@ -5,6 +5,10 @@ import sleep from "./../functions/sleep"
 import jwt from "jsonwebtoken" // Import JWT library
 import {databaseEmitter} from "../Database/index"
 import {getPoints} from "../services/PointService"
+import {checkPlayerJoined} from "../twitch/SessionBot"
+import {getUsernameFromId} from "../functions/getUsernameFromId"
+import bot_keys from "./../../bot_keys.json"
+import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
 
 type auth = {
     token: string,
@@ -82,6 +86,19 @@ export default async function TwitchSocketInit(){
 
         socket.on("getPoints", (callback)=>{
             callback(getPoints(id))
+        })
+
+        // Update on player join as well
+        new Promise(async (resolve, _reject) => {
+            let botKeys: BotKeys | null = await getBotKeys(bot_keys.twitchPlaysBot)
+
+            if (!botKeys)
+                return
+            
+            getUsernameFromId(id, botKeys.access_token, botKeys.client_id).then((username)=>{
+                checkPlayerJoined(id, username || "")
+                resolve("")
+            })
         })
 
         console.log(`User Connected! ${auth.userId}`)

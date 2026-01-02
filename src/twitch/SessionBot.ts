@@ -30,7 +30,7 @@ export let playerSessions: Map<string, string> = new Map()
 */
 export let sessionsEmitter = new EventEmitter()
 
-function checkPlayerJoined(playerId: string, username: string){
+export function checkPlayerJoined(playerId: string, username: string){
     if (playerSessions.has(playerId))
         return
 
