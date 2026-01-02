@@ -1,4 +1,4 @@
-import {get, set, has} from "../Database/index"
+import {get, set, has, playersData} from "../Database/index"
 
 export function getPoints(userid: string): number {
     if (!has(userid, "points"))
@@ -12,7 +12,6 @@ export function givePoints(userid: string, points: number){
         return
 
     let currentPoints: number = getPoints(userid)
-
     set(userid, "points", currentPoints + points)
 }
 
