@@ -64,6 +64,9 @@ async function cacheChatUsers(){
     })
 
     Array.from(playerSessions.keys()).forEach(userId => {
+        if (userId == "U12345678") // testing id
+            return
+
         if (!currentUserIds.includes(userId)) {
             checkPlayerLeft(userId)
         }

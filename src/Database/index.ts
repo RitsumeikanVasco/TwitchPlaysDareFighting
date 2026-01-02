@@ -87,7 +87,10 @@ export function has(userid: string, index: string): boolean {
     if (!playersData.has(userid))
         return false
 
-    let value = playersData.get(userid)?.get(index) || null
+    let value = playersData.get(userid)?.get(index)
+
+    if (value == undefined)
+        value = null
 
     return value != null
 }
