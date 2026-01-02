@@ -17,10 +17,6 @@ import {socketInit} from "./socket/index"
 import {twitchInit} from "./twitch/index"
 import {databaseInit} from "./Database/index"
 
-import {sendAction} from "./services/AttackService"
-import team from "./enums/Team"
-import action from "./enums/Action"
-
 async function initServer(){
     await databaseInit()
     await socketInit()
