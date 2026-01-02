@@ -16,8 +16,8 @@ export default async function GameSocketInit(){
     });
 
     //Initiate the server on the socket port
-    server.listen(Config.socket_port, ()=>{
-        console.log(`Listening on Port ${Config.socket_port}`)
+    server.listen(Config.socket_game_port, ()=>{
+        console.log(`[Game Socket] Listening on Port ${Config.socket_game_port}`)
     })
 }
 
