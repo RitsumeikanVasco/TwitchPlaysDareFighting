@@ -44,11 +44,6 @@ export default async function TwitchSocketInit(){
         });
     });
 
-    io.on("connection", (socket) => {
-        console.log(`Twitch Socket Connected!`)
-        console.log(socket.handshake.auth)
-    });
-
     // Add error listener to see if the port is blocked
     server.on('error', (e: any) => {
         if (e.code === 'EADDRINUSE')
@@ -59,6 +54,10 @@ export default async function TwitchSocketInit(){
 
     server.listen(Config.socket_twitch_port, "0.0.0.0", () => {
         console.log(`[Twitch Socket] listening on port: ${Config.socket_twitch_port}`)
+    })
+
+    io.on("connection", (socket) => {
+        console.log(`User Connected! ${socket.handshake.auth.userId}`)
     })
 }
 
