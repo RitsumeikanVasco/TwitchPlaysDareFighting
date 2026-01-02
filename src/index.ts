@@ -10,7 +10,6 @@ https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=YOUR_CLIENT_
 require("dotenv").config();
 
 import initializeModules from "./functions/initializeModules"
-import express from 'express'
 import Config from "./Config.json"
 import path from 'path'
 
@@ -22,15 +21,12 @@ import {sendAction} from "./services/AttackService"
 import team from "./enums/Team"
 import action from "./enums/Action"
 
-const app = express()
-
-app.listen(Config.port, async () => {
+async function initServer(){
     await databaseInit()
     await socketInit()
     await twitchInit()
 
     initializeModules(path.join(__dirname, "services"))
-
     /*
     setTimeout(()=>{
         sendAction(team.P1, action.STAND_FA)
@@ -39,4 +35,7 @@ app.listen(Config.port, async () => {
         }, 1000)
     }, 1000)    
     */
-})
+}
+
+
+initServer()

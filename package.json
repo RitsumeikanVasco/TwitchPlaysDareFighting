@@ -15,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.1",
     "@types/tmi.js": "^1.8.6",
     "supabase": "^2.67.3",
@@ -26,6 +27,7 @@
     "axios": "^1.13.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.0.1",
     "rimraf": "^6.1.2",
     "socket.io": "^4.8.1",
