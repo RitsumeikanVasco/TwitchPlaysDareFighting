@@ -33,8 +33,15 @@ export default async function TwitchSocketInit(){
     })
 
     io.use((socket, next) => {
+        const auth = socket.handshake.auth
         const token = socket.handshake.auth.token
         
+        const cleanUserId = auth.userId.startsWith('U') 
+            ? auth.userId.substring(1) 
+            : auth.userId;
+
+        socket.handshake.auth.userId = cleanUserId
+
         if (token === "mock_jwt_token") 
             return next()
 
