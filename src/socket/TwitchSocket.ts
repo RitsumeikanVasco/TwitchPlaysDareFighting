@@ -73,6 +73,7 @@ export default async function TwitchSocketInit(){
         const auth: auth = socket.handshake.auth as auth
         const id = auth.userId
 
+        // Used to update the values in the client
         function updateValues(){
             socket.emit("updatedValues", getPoints(id))
         }
@@ -85,16 +86,20 @@ export default async function TwitchSocketInit(){
         })
 
         databaseEmitter.on("ValueChanged", (userid =>{
-            console.log("valued changed > 1")
             if (id != userid)
                 return
-            console.log("valued changed > 2")
+
             updateValues()
         }))
 
         socket.on("getPoints", (callback)=>{
             callback(getPoints(id))
         })
+
+        /* Shop Connections */
+
+        /* Team Connections */
+        
 
         // Update on player join as well
         new Promise(async (resolve, _reject) => {
