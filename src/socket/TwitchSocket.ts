@@ -13,6 +13,7 @@ import {PurchaseItem} from "./../services/ShopService"
 
 // Votes
 import {castVote, castedVote, votesEmitter} from "./../services/VoteService"
+import Action from "./../enums/Action"
 // Teams
 import {getTeam, getTeamCount, teamEmitter} from "./../services/TeamService"
 import Team from "./../enums/Team"
@@ -78,9 +79,9 @@ export default async function TwitchSocketInit(){
 
     io.on("connection", (socket) => {
         const auth: auth = socket.handshake.auth as auth
-        const id = auth.userId
+        const id: string = auth.userId
 
-        // Used to update the values in the client
+        /* Points Connections */
         function updateValues(){
             socket.emit("updatedValues", getPoints(id))
         }
@@ -103,14 +104,32 @@ export default async function TwitchSocketInit(){
             callback(getPoints(id))
         })
 
-        /* Attack Connections */
-        socket.on("voteAttack", (attackId: string) => {
-            console.log("Voted on Attack: ", attackId)
-        })
-
+        /* Votes Connections */
         function resetVote(){
             socket.emit("voteReset")
         }
+
+        function voted(){
+            socket.emit("voted")
+        }
+
+        votesEmitter.on("CastedVote", (userid)=>{
+            if (userid == id)
+                voted()
+        })
+
+        votesEmitter.on("VotesReset", ()=>{
+            resetVote()
+        })
+
+        socket.on("getVoted", (callback)=>{
+            callback(castedVote(id))
+        })
+
+        /* Attack Connections */
+        socket.on("voteAttack", (attackId: string) => {
+           castVote(id, attackId as Action)
+        })
 
         /* Shop Connections */
         socket.on("purchaseItem", (itemId: string) => {
@@ -120,17 +139,31 @@ export default async function TwitchSocketInit(){
         /* Team Connections */
         socket.on("getTeamsCount", (callback)=>{
             callback({
-                team1Count: 1,
-                team2Count: 2
+                team1Count: getTeamCount(Team.P1),
+                team2Count: getTeamCount(Team.P2)
             })
         })
 
         function teamCountsChanged(){
             socket.emit("teamCountsChanged", {
-                team1Count: 1,
-                team2Count: 2
+                team1Count: getTeamCount(Team.P1),
+                team2Count: getTeamCount(Team.P2)
             })
         }
+
+        teamEmitter.on("JoinedTeam", (userid, team) => {
+            teamCountsChanged()
+
+            if (userid == id)
+                socket.emit("joinedTeam", team)
+        })
+
+        teamEmitter.on("LeftTeam", (userid)=> {
+            teamCountsChanged()
+
+            if (userid == id)
+                socket.emit("leftTeam")
+        })
 
         // Update on player join as well
         new Promise(async (resolve, _reject) => {
@@ -144,7 +177,7 @@ export default async function TwitchSocketInit(){
                 resolve("")
             })
         })
-
+ 
         /* FOR TESTING PURPOSES
         setTimeout(async ()=>{
             while(true){
