@@ -32,6 +32,7 @@ export function setTeam(userid: string, team: Team){
     if (getTeam(userid) == team)
         return
 
+    PLAYER_TEAMS.set(userid, team)
     teamEmitter.emit("JoinedTeam", userid, team)
 }
 

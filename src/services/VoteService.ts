@@ -36,7 +36,6 @@ export function castVote(userid: string, action: Action){
 
     teamActionsCount.set(action, currentCount + 1)
     VOTER_MAP.set(userid, true)
-
     votesEmitter.emit("CastedVote", userid)
 }
 //||||||||||||||||||\\

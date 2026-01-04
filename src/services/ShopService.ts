@@ -12,7 +12,7 @@ export function PurchaseItem(userid: string, itemId: string){
         return
 
     const price: number = ITEMS_PRICE.get(itemId) || 0
-    
+
     purchase(userid, price, ()=>{
         // Hard-coded for simplicity
         switch(itemId){

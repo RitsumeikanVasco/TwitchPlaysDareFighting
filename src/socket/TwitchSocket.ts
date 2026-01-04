@@ -15,7 +15,7 @@ import {PurchaseItem} from "./../services/ShopService"
 import {castVote, castedVote, votesEmitter} from "./../services/VoteService"
 import Action from "./../enums/Action"
 // Teams
-import {getTeam, getTeamCount, teamEmitter} from "./../services/TeamService"
+import {setTeam, getTeam, getTeamCount, teamEmitter} from "./../services/TeamService"
 import Team from "./../enums/Team"
 
 type auth = {
@@ -155,7 +155,7 @@ export default async function TwitchSocketInit(){
             teamCountsChanged()
 
             if (userid == id)
-                socket.emit("joinedTeam", team)
+                socket.emit("joinedTeam", team == Team.P1 ? 1 : 2)
         })
 
         teamEmitter.on("LeftTeam", (userid)=> {
@@ -163,6 +163,26 @@ export default async function TwitchSocketInit(){
 
             if (userid == id)
                 socket.emit("leftTeam")
+        })
+
+        socket.on("selectedTeam", (team)=>{
+            if (team == 1){
+                setTeam(id, Team.P1)
+            }else{
+                setTeam(id, Team.P2)
+            }
+        })
+
+        socket.on("getTeam", (callback)=>{
+            let team: Team | null = getTeam(id)
+
+            if (team == Team.P1){
+                callback(1)
+            }else if (team == Team.P2){
+                callback(2)
+            }else {
+                callback()
+            }
         })
 
         // Update on player join as well
