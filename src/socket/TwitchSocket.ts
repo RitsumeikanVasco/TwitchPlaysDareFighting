@@ -9,6 +9,7 @@ import {checkPlayerJoined} from "../twitch/SessionBot"
 import {getUsernameFromId} from "../functions/getUsernameFromId"
 import bot_keys from "./../../bot_keys.json"
 import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
+import {PurchaseItem} from "./../services/ShopService"
 
 type auth = {
     token: string,
@@ -96,10 +97,34 @@ export default async function TwitchSocketInit(){
             callback(getPoints(id))
         })
 
+        /* Attack Connections */
+        socket.on("voteAttack", (attackId: string) => {
+            console.log("Voted on Attack: ", attackId)
+        })
+
+        function resetVote(){
+            socket.emit("voteReset")
+        }
+
         /* Shop Connections */
+        socket.on("purchaseItem", (itemId: string) => {
+            PurchaseItem(id, itemId)
+        })
 
         /* Team Connections */
-        
+        socket.on("getTeamsCount", (callback)=>{
+            callback({
+                team1Count: 1,
+                team2Count: 2
+            })
+        })
+
+        function teamCountsChanged(){
+            socket.emit("teamCountsChanged", {
+                team1Count: 1,
+                team2Count: 2
+            })
+        }
 
         // Update on player join as well
         new Promise(async (resolve, _reject) => {
