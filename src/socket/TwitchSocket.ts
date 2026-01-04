@@ -11,6 +11,12 @@ import bot_keys from "./../../bot_keys.json"
 import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
 import {PurchaseItem} from "./../services/ShopService"
 
+// Votes
+import {castVote, castedVote, votesEmitter} from "./../services/VoteService"
+// Teams
+import {getTeam, getTeamCount, teamEmitter} from "./../services/TeamService"
+import Team from "./../enums/Team"
+
 type auth = {
     token: string,
     channelId: string,
