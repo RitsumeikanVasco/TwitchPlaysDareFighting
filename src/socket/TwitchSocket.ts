@@ -9,6 +9,7 @@ import {checkPlayerJoined} from "../twitch/SessionBot"
 import {getUsernameFromId} from "../functions/getUsernameFromId"
 import bot_keys from "./../../bot_keys.json"
 import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
+import {PurchaseItem} from "./../services/ShopService"
 
 type auth = {
     token: string,
@@ -73,6 +74,7 @@ export default async function TwitchSocketInit(){
         const auth: auth = socket.handshake.auth as auth
         const id = auth.userId
 
+        // Used to update the values in the client
         function updateValues(){
             socket.emit("updatedValues", getPoints(id))
         }
@@ -85,16 +87,44 @@ export default async function TwitchSocketInit(){
         })
 
         databaseEmitter.on("ValueChanged", (userid =>{
-            console.log("valued changed > 1")
             if (id != userid)
                 return
-            console.log("valued changed > 2")
+
             updateValues()
         }))
 
         socket.on("getPoints", (callback)=>{
             callback(getPoints(id))
         })
+
+        /* Attack Connections */
+        socket.on("voteAttack", (attackId: string) => {
+            console.log("Voted on Attack: ", attackId)
+        })
+
+        function resetVote(){
+            socket.emit("voteReset")
+        }
+
+        /* Shop Connections */
+        socket.on("purchaseItem", (itemId: string) => {
+            PurchaseItem(id, itemId)
+        })
+
+        /* Team Connections */
+        socket.on("getTeamsCount", (callback)=>{
+            callback({
+                team1Count: 1,
+                team2Count: 2
+            })
+        })
+
+        function teamCountsChanged(){
+            socket.emit("teamCountsChanged", {
+                team1Count: 1,
+                team2Count: 2
+            })
+        }
 
         // Update on player join as well
         new Promise(async (resolve, _reject) => {
