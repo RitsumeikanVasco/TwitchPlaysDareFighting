@@ -12,7 +12,7 @@ import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
 import {PurchaseItem} from "./../services/ShopService"
 
 // Votes
-import {castVote, castedVote, votesEmitter} from "./../services/VoteService"
+import {castVote, castedVote, votesEmitter, TimeTick} from "./../services/VoteService"
 import Action from "./../enums/Action"
 // Teams
 import {setTeam, getTeam, getTeamCount, teamEmitter} from "./../services/TeamService"
@@ -150,7 +150,7 @@ export default async function TwitchSocketInit(){
         })
 
         function teamCountsChanged(){
-            socket.emit("teamCountsChanged", {
+            io.emitt("teamCountsChanged",  {
                 team1Count: getTeamCount(Team.P1),
                 team2Count: getTeamCount(Team.P2)
             })
@@ -214,6 +214,12 @@ export default async function TwitchSocketInit(){
 
         console.log(`User Connected! ${auth.userId}`)
     })
+    //Timer to Browser / Extension
+    TimeTick.Connect((currentTimeLeft: number) => {
+        io.emit("timerUpdated", currentTimeLeft);
+    });
+}
+
 }
 
 export async function getSocket(){
