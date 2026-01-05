@@ -43,6 +43,16 @@ export function castVote(userid: string, action: Action){
     VOTER_MAP.set(userid, true)
     votesEmitter.emit("CastedVote", userid)
 }
+
+export function getActionVoteCount(team: Team, action: Action): number{
+    if (!VOTES.has(team))
+        return 0
+
+    let teamVotes: Map<Action, number> = VOTES.get(team) as Map<Action, number>
+
+    return teamVotes.get(action) || 0
+}
+
 //||||||||||||||||||\\
 
 function getMajorityVote(team: Team): Action | null {
@@ -78,12 +88,12 @@ function resetVotes(){
 function votingFinished(){
     for (const team of [Team.P1, Team.P2]) {
         const action: Action | null = getMajorityVote(team)
+        VotingFinished.Fire(team, action)
 
         if (!action)
             continue
 
         sendAction(team, action)
-        VotingFinished.Fire(team, action)
     }
 
     resetVotes()
