@@ -15,8 +15,8 @@ const VOTES: Map<Team, Map<Action, number>> = new Map([
 const VOTER_MAP: Map<string, boolean> = new Map()
 
 export let votesEmitter = new EventEmitter()
-export const TimeTick = new Signal()
-export const VotingFinished = new Signal()
+export const TimeTick = new Signal() // number
+export const VotingFinished = new Signal() // (Team, Action)
 
 // Exposed Methods \\
 export function castedVote(userid: string): boolean{
