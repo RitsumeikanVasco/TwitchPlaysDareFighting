@@ -8,6 +8,7 @@ import Team from "./../enums/Team"
 import {shopEmitter} from "./../services/ShopService"
 import ShopItems from "./../enums/ShopItems"
 import {getTeam} from "./../services/TeamService"
+import {roundEmitter} from "./../services/RoundService"
 
 const CONNECTION_MESSAGE: string = "Client connected"
 const POINTS_PER_WIN: number = 50
@@ -21,10 +22,12 @@ export default async function GameSocketInit(){
     io.on("connection", (socket) => {
         console.log(CONNECTION_MESSAGE);
 
-        socket.on("RoundFinished", (winner: Team, _round: number)=>{
+        socket.on("RoundFinished", (winner: Team, round: number)=>{
             getPlayersFromTeam(winner).forEach((value: string)=>{
                 givePoints(value, POINTS_PER_WIN)
             })
+
+            roundEmitter.emit("RoundFinished", winner, round)
         })
 
         shopEmitter.on("purchasedItem", (userid: string, itemid: string)=>{
