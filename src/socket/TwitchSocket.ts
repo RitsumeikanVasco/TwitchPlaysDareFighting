@@ -12,7 +12,7 @@ import {getBotKeys, setBotKeys, BotKeys} from "./../Database/index"
 import {PurchaseItem} from "./../services/ShopService"
 
 // Votes
-import {castVote, castedVote, votesEmitter} from "./../services/VoteService"
+import {castVote, castedVote, votesEmitter, TimeTick} from "./../services/VoteService"
 import Action from "./../enums/Action"
 // Teams
 import {setTeam, getTeam, getTeamCount, teamEmitter} from "./../services/TeamService"
