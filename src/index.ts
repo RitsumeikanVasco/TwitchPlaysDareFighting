@@ -17,6 +17,8 @@ import {socketInit} from "./socket/index"
 import {twitchInit} from "./twitch/index"
 import {databaseInit} from "./Database/index"
 
+import {classifyChat} from "./functions/classifyChat"
+
 async function initServer(){
     await databaseInit()
     await socketInit()
@@ -35,4 +37,5 @@ async function initServer(){
 }
 
 
-initServer()
+// initServer()
+console.log(classifyChat("protect"))

@@ -1,7 +1,14 @@
 import fs from "fs";
 import path from "path";
 
-export type ChatClass = "attack" | "defence" | "jump" | "other";
+export type ChatClass = 
+  | "Punch" 
+  | "Crouch" 
+  | "Walk Forward" 
+  | "Step Back" 
+  | "Guard" 
+  | "Punch Up" 
+  | "other";
 
 const CONF_THRESHOLD = 0.5;
 
