@@ -145,7 +145,7 @@ export default async function TwitchSocketInit(){
         })
 
         function teamCountsChanged(){
-            io.emitt("teamCountsChanged,  
+            io.emitt("teamCountsChanged",  {
                 team1Count: getTeamCount(Team.P1),
                 team2Count: getTeamCount(Team.P2)
             })
@@ -209,6 +209,12 @@ export default async function TwitchSocketInit(){
 
         console.log(`User Connected! ${auth.userId}`)
     })
+    //Timer to Browser / Extension
+    TimeTick.Connect((currentTimeLeft: number) => {
+        io.emit("timerUpdated", currentTimeLeft);
+    });
+}
+
 }
 
 export async function getSocket(){
