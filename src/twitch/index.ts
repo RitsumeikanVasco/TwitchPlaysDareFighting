@@ -1,10 +1,10 @@
 import { initiateBot } from "../functions/initiateBot"
-import {initNotificationBot} from "./NotificationBot"
+import * as NotificationBot from "./NotificationBot"
 import * as SessionBot from "./SessionBot"
 import * as TeamBot from "./teamBot"
 
 export async function twitchInit(){
     await SessionBot.initSessionBot()
-    await initNotificationBot()
-    // await TeamBot.startTeamBot()
+    await NotificationBot.initNotificationBot()
+    await TeamBot.initTeamBot()
 }
