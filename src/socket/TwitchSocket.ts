@@ -145,7 +145,7 @@ export default async function TwitchSocketInit(){
         })
 
         function teamCountsChanged(){
-            socket.emit("teamCountsChanged", {
+            io.emitt("teamCountsChanged,  
                 team1Count: getTeamCount(Team.P1),
                 team2Count: getTeamCount(Team.P2)
             })
