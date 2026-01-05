@@ -25,19 +25,11 @@ export async function initTeamBot() {
             case "!team1":
             case "!p1":
                 setTeam(userId, Team.P1);
-                twitchClient.say(
-                    Config.target_channel,
-                    `@${username} joined Team 1`
-                );
                 break;
 
             case "!team2":
             case "!p2":
                 setTeam(userId, Team.P2);
-                twitchClient.say(
-                    Config.target_channel,
-                    `@${username} joined Team 2`
-                );
                 break;
 
             case "!leave":

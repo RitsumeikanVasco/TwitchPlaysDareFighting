@@ -41,7 +41,7 @@ export async function initNotificationBot(){
         if(!username)
             return
 
-        twitchClient.say(Config.target_channel, `${getTeamHeader(team)} ${username} joined!`)
+        twitchClient.say(Config.target_channel, `${getTeamHeader(team)} @${username} joined!`)
     })
 
     shopEmitter.on("purchasedItem", (userid: string, itemId: string)=>{
@@ -50,7 +50,7 @@ export async function initNotificationBot(){
         if(!username)
             return
 
-        twitchClient.say(Config.target_channel, `${username} purchased ${itemId}!`)
+        twitchClient.say(Config.target_channel, `@${username} purchased ${itemId}!`)
     })
 
     roundEmitter.on("RoundFinished", (team: Team, round: number)=>{
