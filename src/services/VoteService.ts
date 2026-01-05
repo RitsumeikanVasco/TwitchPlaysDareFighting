@@ -7,13 +7,13 @@ import Clock from "./../classes/Clock"
 import Signal from "./../classes/Signal"
 
 const VOTE_INTERVAL_SECONDS: number = 10
-const VOTE_INTERVAL_MS: number = VOTE_INTERVAL_SECONDS * 1000;
 const VOTES: Map<Team, Map<Action, number>> = new Map([
     [Team.P1, new Map()],
     [Team.P2, new Map()],
 ])
 const VOTER_MAP: Map<string, boolean> = new Map()
 
+export let clock: Clock;
 export let votesEmitter = new EventEmitter()
 export const TimeTick = new Signal() // number
 export const VotingFinished = new Signal() // (Team, Action)
@@ -100,7 +100,8 @@ function votingFinished(){
 }
 
 export function init(){
-    let clock = new Clock(VOTE_INTERVAL_SECONDS)
+    clock = new Clock(VOTE_INTERVAL_SECONDS)
+    
     clock.Tick.Connect((currentTime)=>{
         let currentTimeLeft: number = VOTE_INTERVAL_SECONDS - currentTime
 
