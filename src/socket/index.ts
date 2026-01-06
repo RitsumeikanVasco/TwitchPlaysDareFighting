@@ -5,4 +5,5 @@ import OBSSocket from "./OBSSocket"
 export async function socketInit(){
     GameSocket()
     TwitchSocket()
+    OBSSocket()
 }

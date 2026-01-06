@@ -28,7 +28,10 @@ export default function Init(){
     io.on("connection", (socket) => {
          /* Timer Connections */
         socket.on("getTimer", (callback)=>{
-            callback(clock.getCurrentSeconds())
+            if (!clock)
+                callback(0)
+            else
+                callback(clock.getCurrentSeconds())
         })
 
         TimeTick.Connect((currentTimeLeft: number) => {
