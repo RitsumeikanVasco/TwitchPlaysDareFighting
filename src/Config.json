@@ -1,6 +1,7 @@
 {
     "socket_game_port": 3001,
     "socket_twitch_port": 3002,
+    "socket_obs_port": 3003,
 
     "extension_secret": "mtttZT5Eg6zcMnBpDamiOdNeYtl7reucZat28bzlB70",
 

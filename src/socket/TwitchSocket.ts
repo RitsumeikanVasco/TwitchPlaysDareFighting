@@ -44,6 +44,11 @@ export default async function TwitchSocketInit(){
         const auth = socket.handshake.auth
         const token = socket.handshake.auth.token
         
+        if (!auth || !auth.userId || !auth.token) {
+                console.error("Connection rejected: Missing auth credentials");
+                return next(new Error("Missing Auth"));
+        }
+
         const cleanUserId = auth.userId.startsWith('U') 
             ? auth.userId.substring(1) 
             : auth.userId;
@@ -55,7 +60,7 @@ export default async function TwitchSocketInit(){
 
         const secret = Buffer.from(Config.extension_secret, 'base64')
 
-        jwt.verify(token, secret, (err: any, decoded: any) => {
+        jwt.verify(token, secret, { clockTolerance: 10 }, (err: any, decoded: any) => {
             if (err) {
                 console.log("JWT Fail:", err.message)
                 return next(new Error("Auth Error"))
@@ -145,7 +150,7 @@ export default async function TwitchSocketInit(){
         })
 
         function teamCountsChanged(){
-            socket.emit("teamCountsChanged", {
+            socket.emit("teamCountsChanged",  {
                 team1Count: getTeamCount(Team.P1),
                 team2Count: getTeamCount(Team.P2)
             })

@@ -3,15 +3,20 @@ import Action from "./../enums/Action"
 import { EventEmitter } from "events";
 import {sendAction} from "./AttackService"
 import {getTeam, hasTeam} from "./TeamService"
+import Clock from "./../classes/Clock"
+import Signal from "./../classes/Signal"
 
 const VOTE_INTERVAL_SECONDS: number = 10
-const VOTE_INTERVAL_MS: number = VOTE_INTERVAL_SECONDS * 1000;
 const VOTES: Map<Team, Map<Action, number>> = new Map([
     [Team.P1, new Map()],
     [Team.P2, new Map()],
 ])
 const VOTER_MAP: Map<string, boolean> = new Map()
+
+export let clock: Clock;
 export let votesEmitter = new EventEmitter()
+export const TimeTick = new Signal() // number
+export const VotingFinished = new Signal() // (Team, Action)
 
 // Exposed Methods \\
 export function castedVote(userid: string): boolean{
@@ -38,6 +43,16 @@ export function castVote(userid: string, action: Action){
     VOTER_MAP.set(userid, true)
     votesEmitter.emit("CastedVote", userid)
 }
+
+export function getActionVoteCount(team: Team, action: Action): number{
+    if (!VOTES.has(team))
+        return 0
+
+    let teamVotes: Map<Action, number> = VOTES.get(team) as Map<Action, number>
+
+    return teamVotes.get(action) || 0
+}
+
 //||||||||||||||||||\\
 
 function getMajorityVote(team: Team): Action | null {
@@ -70,18 +85,28 @@ function resetVotes(){
     votesEmitter.emit("VotesReset")
 }
 
-export function init(){
+function votingFinished(){
+    for (const team of [Team.P1, Team.P2]) {
+        const action: Action | null = getMajorityVote(team)
+        VotingFinished.Fire(team, action)
+
+        if (!action)
+            continue
+
+        sendAction(team, action)
+    }
+
     resetVotes()
-    setInterval(() => {
-        for (const team of [Team.P1, Team.P2]) {
-            const action: Action | null = getMajorityVote(team)
+}
 
-            if (!action)
-                continue
+export function init(){
+    clock = new Clock(VOTE_INTERVAL_SECONDS)
+    
+    clock.Tick.Connect((currentTime)=>{
+        let currentTimeLeft: number = VOTE_INTERVAL_SECONDS - currentTime
 
-            sendAction(team, action)
-        }
+        TimeTick.Fire(currentTimeLeft)
+    })
 
-        resetVotes()
-    }, VOTE_INTERVAL_MS)
+    clock.Elapsed.Connect(votingFinished)
 }
