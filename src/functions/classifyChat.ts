@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
-
-export type ChatClass = "attack" | "defence" | "jump" | "other";
+import ChatClass from "./../enums/ChatClass"
 
 const CONF_THRESHOLD = 0.5;
 
@@ -76,7 +75,7 @@ function predictLabel(vec: number[]): ChatClass {
   }
 
   // Apply confidence threshold
-  if (bestScore < CONF_THRESHOLD) return "other";
+  if (bestScore < CONF_THRESHOLD) return ChatClass.other;
 
   return bestClass;
 }

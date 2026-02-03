@@ -16,7 +16,7 @@ export async function getUsernameFromId(userId: string, accessToken: string, cli
         
         return null;
     } catch (error) {
-        console.error("Error fetching username:", error);
-        return null;
+        // console.error("Error fetching username:", error);
+        return "N/A";
     }
 }

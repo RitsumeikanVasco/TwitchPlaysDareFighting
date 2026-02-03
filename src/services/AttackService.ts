@@ -1,6 +1,6 @@
 import Team from "./../enums/Team"
 import Action from "../enums/Action"
-import {getSocket} from "../socket/index"
+import {getSocket} from "../socket/GameSocket"
 
 export function sendAction(team: Team, action: Action){
     getSocket().then((socket)=>{
